@@ -49,13 +49,13 @@
         }
     // Partially calls a Kernel with less threads. Stream does nothing here.
     // The range of the subset executed is also determiend by the grid and block sizes.
-    #define CALL_PARTIAL_KERNEL( func, name, grid, block, start, stream, ... )                                                                  \
+/*    #define CALL_PARTIAL_KERNEL( func, name, grid, block, start, stream, ... )                                                                  \
         {                                                                                                                                       \
             size_t total_threads = gridDim.x * gridDim.y * gridDim.z * blockDim.x * blockDim.y * blockDim.z;                                    \
-            _Pragma( "omp parallel for schedule(dynamic) num_threads(system.omp_max_threads)" ) for ( int i = start; i < total_threads; ++i ) { \
+            _Pragma( "omp parallel for schedule(static) num_threads(system.omp_max_threads)" ) for ( int i = start; i < total_threads; ++i ) { \
                     func( i, __VA_ARGS__ );                                                                                                     \
             }                                                                                                                                   \
-        }
+        }*/
 #endif
 
 // Swaps symbols a and b

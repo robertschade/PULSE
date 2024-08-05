@@ -53,7 +53,7 @@ void PC3::Solver::iterateFixedTimestepRungeKutta4( dim3 block_size, dim3 grid_si
     auto pump_pointers = dev_pump_oscillation.pointers();
     auto potential_pointers = dev_potential_oscillation.pointers();
 
-    CALCULATE_K( 1, p.t, wavefunction, reservoir );
+    //CALCULATE_K( 1, p.t, wavefunction, reservoir );
  
     CALL_KERNEL(
         Kernel::RK::runge_sum_to_input_kw, "Sum for K4", grid_size, block_size,
@@ -61,29 +61,30 @@ void PC3::Solver::iterateFixedTimestepRungeKutta4( dim3 block_size, dim3 grid_si
         { 0.5 } // 0.5*dt*K1
     );
 
-    CALCULATE_K( 2, p.t + 0.5 * p.dt, buffer_wavefunction, buffer_reservoir );
-
+    //CALCULATE_K( 2, p.t + 0.5 * p.dt, buffer_wavefunction, buffer_reservoir );
+    /*
     CALL_KERNEL(
         Kernel::RK::runge_sum_to_input_kw, "Sum for K3", grid_size, block_size,
         p.dt, device_pointers, p, io,
-        { 0.0, 0.5 } // 0.5*dt*K2
+        {0.0, 0.5 } // 0.5*dt*K2
     );
-
-    CALCULATE_K( 3, p.t + 0.5 * p.dt, buffer_wavefunction, buffer_reservoir);
+*/
+    /*
+    //CALCULATE_K( 3, p.t + 0.5 * p.dt, buffer_wavefunction, buffer_reservoir);
 
     CALL_KERNEL(
         Kernel::RK::runge_sum_to_input_kw, "Sum for K4", grid_size, block_size,
         p.dt, device_pointers, p, io,
         { 0.0, 0.0, 1.0 } // dt*K3
     );
-
-    CALCULATE_K( 4, p.t + p.dt, buffer_wavefunction, buffer_reservoir);
-
+*/
+    //CALCULATE_K( 4, p.t + p.dt, buffer_wavefunction, buffer_reservoir);
+/*
     CALL_KERNEL(
         Kernel::RK::runge_sum_to_input_kw, "Final Sum", grid_size, block_size,
         p.dt, device_pointers, p, io,
         { 1.0/6.0, 1.0/3.0, 1.0/3.0, 1.0/6.0 } // RK Final Weights
-    );
+    );*/
 
     // Swap the next and current wavefunction buffers. This only swaps the pointers, not the data.
     swapBuffers();

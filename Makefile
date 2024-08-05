@@ -20,7 +20,8 @@ ARCH ?= NONE
 # SFML PATH
 SFML_PATH = external/SFML/
 # Optimization
-OPTIMIZATION = -O3
+OPTIMIZATION = -O3 -march=native -flto -funroll-loops -finline-limit=2000 
+
 
 # Compiler flags. Warning 4005 is for redefinitions of macros, which we actively use.
 GCCFLAGS = -std=c++20 -fopenmp -x c++
@@ -71,8 +72,9 @@ ifeq ($(FP32),TRUE)
 	ADD_FLAGS += -DUSE_HALF_PRECISION
 endif
 ifeq ($(CPU),TRUE)
-	ADD_FLAGS += -DUSE_CPU
+	ADD_FLAGS += -DUSE_CPU -lstdc++ 
 	ADD_FLAGS += -lfftw3f -lfftw3
+#	ADD_FLAGS +=  -qmkl=parallel 
 endif
 
 ifeq ($(PRETTYCMD),FALSE)

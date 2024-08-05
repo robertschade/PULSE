@@ -156,7 +156,7 @@ void PC3::SystemParameters::printSummary( std::map<std::string, std::vector<doub
                   << initial_state.toString();
     std::cout << EscapeSequence::BOLD << PC3::CLIO::centerString( " Runtime Statistics ", console_width, '-' ) << EscapeSequence::RESET << std::endl;
     double total = PC3::TimeIt::totalRuntime();
-    std::cout << "Total Runtime: " << total << "s --> " << ( total / p.t * 1E3 ) << "ms/ps --> " << ( p.t / total ) << "ps/s --> " << ( total / iteration ) << "s/it" << std::endl;
+    std::cout << "Total Runtime: " << total << "s --> " << ( total / p.t * 1E3 ) << "ms/ps --> " << ( p.t / total ) << "ps/s --> " << ( total / iteration )*1000000.0 << " mus/it" << std::endl;
     std::cout << EscapeSequence::BOLD << PC3::CLIO::centerString( " Infos ", console_width, '-' ) << EscapeSequence::RESET << std::endl;
     
     std::cout << "Calculations done using the '" << iterator << "' solver" << std::endl;
