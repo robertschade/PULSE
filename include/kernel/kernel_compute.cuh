@@ -27,11 +27,11 @@ namespace PC3::Kernel {
             int start;
             Type::real weights[10];
             template <typename ...Args>
-            Weights( Args... _weights ) : n(sizeof...(_weights)), start(0) {
+            Weights( Args... _weights ) : n(sizeof...(_weights)), start(-1) {
                 double _w[] = { _weights... };
                 for (int i = 0; i < n; i++) {
                     // If the weight is smaller than -1E10, we skip this weight, until we find a valid one
-                    if (_w[i] != 0.0 and start == 0 ) 
+                    if (_w[i] != 0.0 and start == -1 ) 
                         start = i;
                     // Always assign the weight, even if it is invalid
                     weights[i] = Type::real(_w[i]);

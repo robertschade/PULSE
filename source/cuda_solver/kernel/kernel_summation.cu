@@ -22,41 +22,9 @@ PULSE_GLOBAL void PC3::Kernel::RK::runge_sum_to_input_kw( int i, Type::real dt, 
     OVERWRITE_THREAD_INDEX(i);
     Type::complex wf = 0.0;
     Type::complex rv = 0.0;
+    //std::cout << weights.start << " " << weights.n << std::endl;
     for (int n = weights.start; n < weights.n; n++) {
         const auto w = weights.weights[n];
-        if(w==0.0)continue;
-        if(n==0){
-          wf += w * dev_ptrs.k1_wavefunction_plus[i]; rv += w * dev_ptrs.k1_reservoir_plus[i];
-        }
-        if(n==1){
-          wf += w * dev_ptrs.k2_wavefunction_plus[i]; rv += w * dev_ptrs.k2_reservoir_plus[i];
-        }
-        if(n==2){
-          wf += w * dev_ptrs.k3_wavefunction_plus[i]; rv += w * dev_ptrs.k3_reservoir_plus[i];
-        }
-        if(n==3){
-          wf += w * dev_ptrs.k4_wavefunction_plus[i]; rv += w * dev_ptrs.k4_reservoir_plus[i];
-        }
-        /*
-        if(n==4){
-          wf += w * dev_ptrs.k5_wavefunction_plus[i]; rv += w * dev_ptrs.k5_reservoir_plus[i];
-        }
-        if(n==5){
-          wf += w * dev_ptrs.k6_wavefunction_plus[i]; rv += w * dev_ptrs.k6_reservoir_plus[i];
-        }
-        if(n==6){
-          wf += w * dev_ptrs.k7_wavefunction_plus[i]; rv += w * dev_ptrs.k7_reservoir_plus[i];
-        }
-        if(n==7){
-          wf += w * dev_ptrs.k8_wavefunction_plus[i]; rv += w * dev_ptrs.k8_reservoir_plus[i];
-        }
-        if(n==8){
-          wf += w * dev_ptrs.k9_wavefunction_plus[i]; rv += w * dev_ptrs.k9_reservoir_plus[i];
-        }
-        if(n==9){
-          wf += w * dev_ptrs.k10_wavefunction_plus[i]; rv += w * dev_ptrs.k10_reservoir_plus[i];
-        }*/
-  /*      
         switch (n) { 
             case 0: wf += w * dev_ptrs.k1_wavefunction_plus[i]; rv += w * dev_ptrs.k1_reservoir_plus[i]; break;
             case 1: wf += w * dev_ptrs.k2_wavefunction_plus[i]; rv += w * dev_ptrs.k2_reservoir_plus[i]; break;
@@ -68,7 +36,7 @@ PULSE_GLOBAL void PC3::Kernel::RK::runge_sum_to_input_kw( int i, Type::real dt, 
             case 7: wf += w * dev_ptrs.k8_wavefunction_plus[i]; rv += w * dev_ptrs.k8_reservoir_plus[i]; break;
             case 8: wf += w * dev_ptrs.k9_wavefunction_plus[i]; rv += w * dev_ptrs.k9_reservoir_plus[i]; break;
             case 9: wf += w * dev_ptrs.k10_wavefunction_plus[i]; rv += w * dev_ptrs.k10_reservoir_plus[i]; break;
-        }*/
+        }
     }
    
     io.out_wf_plus[i] = io.in_wf_plus[i] + dt * wf;
@@ -80,40 +48,6 @@ PULSE_GLOBAL void PC3::Kernel::RK::runge_sum_to_input_kw( int i, Type::real dt, 
     Type::complex rv2 = 0.0;
     for (int n = weights.start; n < weights.n; n++) {
         const auto w = weights.weights[n];
-        if(w==0.0)continue;
-        
-        if(n==0){
-          wf2 += w * dev_ptrs.k1_wavefunction_minus[i]; rv2 += w * dev_ptrs.k1_reservoir_minus[i];
-        }
-        if(n==1){
-          wf2 += w * dev_ptrs.k2_wavefunction_minus[i]; rv2 += w * dev_ptrs.k2_reservoir_minus[i];
-        }
-        if(n==2){
-          wf2 += w * dev_ptrs.k3_wavefunction_minus[i]; rv2 += w * dev_ptrs.k3_reservoir_minus[i];
-        }
-        if(n==3){
-          wf2 += w * dev_ptrs.k4_wavefunction_minus[i]; rv2 += w * dev_ptrs.k4_reservoir_minus[i];
-        }
-        /*
-        if(n==4){
-          wf2 += w * dev_ptrs.k5_wavefunction_minus[i]; rv2 += w * dev_ptrs.k5_reservoir_minus[i];
-        }
-        if(n==5){
-          wf2 += w * dev_ptrs.k6_wavefunction_minus[i]; rv2 += w * dev_ptrs.k6_reservoir_minus[i];
-        }
-        if(n==6){
-          wf2 += w * dev_ptrs.k7_wavefunction_minus[i]; rv2 += w * dev_ptrs.k7_reservoir_minus[i];
-        }
-        if(n==7){
-          wf2 += w * dev_ptrs.k8_wavefunction_minus[i]; rv2 += w * dev_ptrs.k8_reservoir_minus[i];
-        }
-        if(n==8){
-          wf2 += w * dev_ptrs.k9_wavefunction_minus[i]; rv2 += w * dev_ptrs.k9_reservoir_minus[i];
-        }
-        if(n==9){
-          wf2 += w * dev_ptrs.k10_wavefunction_minus[i]; rv2 += w * dev_ptrs.k10_reservoir_minus[i];
-        }*/
-        /*
         switch (n) {
             case 0: wf2 += w * dev_ptrs.k1_wavefunction_minus[i]; rv2 += w * dev_ptrs.k1_reservoir_minus[i]; break;
             case 1: wf2 += w * dev_ptrs.k2_wavefunction_minus[i]; rv2 += w * dev_ptrs.k2_reservoir_minus[i]; break;
@@ -125,7 +59,7 @@ PULSE_GLOBAL void PC3::Kernel::RK::runge_sum_to_input_kw( int i, Type::real dt, 
             case 7: wf2 += w * dev_ptrs.k8_wavefunction_minus[i]; rv2 += w * dev_ptrs.k8_reservoir_minus[i]; break;
             case 8: wf2 += w * dev_ptrs.k9_wavefunction_minus[i]; rv2 += w * dev_ptrs.k9_reservoir_minus[i]; break;
             case 9: wf2 += w * dev_ptrs.k10_wavefunction_minus[i]; rv2 += w * dev_ptrs.k10_reservoir_minus[i]; break;
-        }*/
+        }
     }
     
     io.out_wf_minus[i] = io.in_wf_minus[i] + dt * wf2;
