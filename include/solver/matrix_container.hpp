@@ -98,6 +98,10 @@ struct MatrixContainer {
     // Cache triggers
     bool use_twin_mode, use_fft, use_stochastic;
     int k_max;
+    //Type::complex *** ld;
+    Type::real*** ld;
+    int** map;
+    bool ld_init=false;;
 
     // Declare all matrices using a macro
     #define DEFINE_MATRIX(type, ptrstruct, name, size_scaling, condition_for_construction) PC3::CUDAMatrix<type> name;

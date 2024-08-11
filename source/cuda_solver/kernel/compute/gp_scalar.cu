@@ -16,51 +16,53 @@ PULSE_GLOBAL void PC3::Kernel::Compute::gp_scalar( int i, Type::real t, MatrixCo
     const Type::complex in_wf = io.in_wf_plus[i];
     const Type::complex in_rv = io.in_rv_plus[i];
 
-    Type::complex hamilton = p.m2_over_dx2_p_dy2 * in_wf;
-    hamilton += PC3::Kernel::Hamilton::scalar_neighbours( io.in_wf_plus, i, i / p.N_x /*Row*/, i % p.N_x /*Col*/, p.N_x, p.N_y, p.one_over_dx2, p.one_over_dy2, p.periodic_boundary_x, p.periodic_boundary_y );
+    Type::complex hamilton = p_in.m2_over_dx2_p_dy2 * in_wf;
+    hamilton += PC3::Kernel::Hamilton::scalar_neighbours( io.in_wf_plus, i, i / p_in.N_x /*Row*/, i % p_in.N_x /*Col*/, p_in.N_x, p_in.N_y, p_in.one_over_dx2, p_in.one_over_dy2, p_in.periodic_boundary_x, p_in.periodic_boundary_y );
 
     const Type::real in_psi_norm = CUDA::abs2( in_wf );
     
     // MARK: Wavefunction
-    Type::complex result = p.minus_i_over_h_bar_s * ( p.m_eff_scaled * hamilton );
+    Type::complex result = p_in.minus_i_over_h_bar_s * ( p_in.m_eff_scaled * hamilton );
 
     for (int k = 0; k < oscillation_potential.n; k++) {
-        const size_t offset = k * p.N_x * p.N_y;
+        const size_t offset = k * p_in.N_x * p_in.N_y;
         const Type::complex potential = dev_ptrs.potential_plus[i+offset] * oscillation_potential.amp[k];//CUDA::gaussian_oscillator(t, oscillation_potential.t0[k], oscillation_potential.sigma[k], oscillation_potential.freq[k]);
-        result += p.minus_i_over_h_bar_s * potential * in_wf;
+        result += p_in.minus_i_over_h_bar_s * potential * in_wf;
     }
 
-    result += p.minus_i_over_h_bar_s * p.g_c * in_psi_norm * in_wf;
-    result += p.minus_i_over_h_bar_s * p.g_r * in_rv * in_wf;
-    result += Type::real(0.5) * p.R * in_rv * in_wf;
-    result -= Type::real(0.5) * p.gamma_c * in_wf;
+    result += p_in.minus_i_over_h_bar_s * p_in.g_c * in_psi_norm * in_wf;
+    result += (p_in.minus_i_over_h_bar_s * p_in.g_r +Type::real(0.5) * p_in.R) * in_rv * in_wf;
+//    result += Type::real(0.5) * p.R * in_rv * in_wf;
+    result -= Type::real(0.5) * p_in.gamma_c * in_wf;
+
 
     // MARK: Pulse
     for (int k = 0; k < oscillation_pulse.n; k++) {
-        const size_t offset = k * p.N_x * p.N_y;
+        const size_t offset = k * p_in.N_x * p_in.N_y;
         const Type::complex pulse = dev_ptrs.pulse_plus[i+offset];
-        result += p.one_over_h_bar_s * pulse * oscillation_pulse.amp[k];//CUDA::gaussian_complex_oscillator(t, oscillation_pulse.t0[k], oscillation_pulse.sigma[k], oscillation_pulse.freq[k]);
+        result += p_in.one_over_h_bar_s * pulse * oscillation_pulse.amp[k];//CUDA::gaussian_complex_oscillator(t, oscillation_pulse.t0[k], oscillation_pulse.sigma[k], oscillation_pulse.freq[k]);
     }
     
     // MARK: Stochastic
-    if (p.stochastic_amplitude > 0.0) {
-        const Type::complex dw = dev_ptrs.random_number[i] * CUDA::sqrt( ( p.R * in_rv + p.gamma_c ) / (Type::real(4.0) * p.dV) );
-        result -= p.minus_i_over_h_bar_s * p.g_c * in_wf / p.dV - dw / p.dt;
+    if (p_in.stochastic_amplitude > 0.0) {
+        const Type::complex dw = dev_ptrs.random_number[i] * CUDA::sqrt( ( p_in.R * in_rv + p_in.gamma_c ) / (Type::real(4.0) * p_in.dV) );
+        result -= p_in.minus_i_over_h_bar_s * p_in.g_c * in_wf / p_in.dV - dw / p_in.dt;
     }
     
     io.out_wf_plus[i] = result;
     
     // MARK: Reservoir
-    result = -p.gamma_r * in_rv;
-    result -= p.R * in_psi_norm * in_rv;
+    result = -p_in.gamma_r * in_rv;
+    result -= p_in.R * in_psi_norm * in_rv;
     for (int k = 0; k < oscillation_pump.n; k++) {
-        const int offset = k * p.N_x * p.N_y;
+        const int offset = k * p_in.N_x * p_in.N_y;
             result += dev_ptrs.pump_plus[i+offset] * oscillation_pump.amp[k];
     }
 
     // MARK: Stochastic-2
-    if (p.stochastic_amplitude > 0.0)
-        result += p.R * in_rv / p.dV;
+    if (p_in.stochastic_amplitude > 0.0)
+        result += p_in.R * in_rv / p_in.dV;
+
     io.out_rv_plus[i] = result;
 
 }

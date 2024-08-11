@@ -1,0 +1,11 @@
+*.0
+*.o
+*.s
+*.args
+*.out
+*.ltrans_args
+obj
+output
+*.lto_wrapper_args
+*.res
+*.swp

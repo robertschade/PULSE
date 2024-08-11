@@ -20,11 +20,12 @@ ARCH ?= NONE
 # SFML PATH
 SFML_PATH = external/SFML/
 # Optimization
-OPTIMIZATION = -O3 -march=native -flto -funroll-loops -finline-limit=2000 
-
+OPTIMIZATION = -save-temps -fverbose-asm -g -O3 -mtune=native -march=native -flto -funroll-loops -finline-limit=20000 
+#-fprefetch-loop-arrays
 
 # Compiler flags. Warning 4005 is for redefinitions of macros, which we actively use.
-GCCFLAGS = -std=c++20 -fopenmp -x c++
+GCCFLAGS = -std=c++23 -fopenmp -x c++ 
+#-fopt-info-vec-all -fprefetch-loop-arrays
 ifeq ($(OS),Windows_NT)
 	NVCCFLAGS = -std=c++20 -Xcompiler -openmp -lcufft -lcurand -lcudart -lcudadevrt  -Xcompiler="-wd4005" -rdc=true
 else
@@ -72,7 +73,7 @@ ifeq ($(FP32),TRUE)
 	ADD_FLAGS += -DUSE_HALF_PRECISION
 endif
 ifeq ($(CPU),TRUE)
-	ADD_FLAGS += -DUSE_CPU -lstdc++ 
+	ADD_FLAGS += -DUSE_CPU -lstdc++  -lm
 	ADD_FLAGS += -lfftw3f -lfftw3
 #	ADD_FLAGS +=  -qmkl=parallel 
 endif

@@ -95,7 +95,8 @@ class Solver {
         { "ssfm", { 2, std::bind( &Solver::iterateSplitStepFourier, this, std::placeholders::_1, std::placeholders::_2 ) } },
         { "itp", { 1, std::bind( &Solver::iterateImaginaryTimePropagation, this, std::placeholders::_1, std::placeholders::_2 ) } }
     };
-
+    void sum_block_1(int N,Type::real* __restrict A,Type::real alpha,Type::real* __restrict B,Type::real* __restrict C);
+    void sum_block_4(int N,Type::real* __restrict A,Type::real alpha1,Type::real* __restrict B1,Type::real alpha2,Type::real* __restrict B2,Type::real alpha3,Type::real* __restrict B3,Type::real alpha4,Type::real* __restrict B4,Type::real* __restrict C);    void gp_scalar2(int Nx,int Ny,Type::real t,Type::real m2_over_dx2_p_dy2,Type::real one_over_dx2,Type::real one_over_dy2,Type::real minus_1_over_h_bar_s,Type::real g_c,Type::real g_r,Type::real R,Type::real gamma_c,Type::real gamma_r,Type::real m_eff_scaled,Type::real* __restrict in_wfu_real,Type::real* __restrict in_wfu_imag,Type::real* __restrict in_res_real,Type::real* __restrict in_res_imag,Type::real* __restrict out_wfu_real,Type::real* __restrict out_wfu_imag,Type::real* __restrict out_res_real,Type::real* __restrict out_res_imag);
     bool iterate();
 
     void applyFFTFilter( dim3 block_size, dim3 grid_size, bool apply_mask = true );
@@ -113,7 +114,8 @@ class Solver {
 };
 
 // Helper macro to choose the correct runge function
-#define RUNGE_FUNCTION_GP (p.use_twin_mode ? PC3::Kernel::Compute::gp_tetm : PC3::Kernel::Compute::gp_scalar)
+//#define RUNGE_FUNCTION_GP (p.use_twin_mode ? PC3::Kernel::Compute::gp_tetm : PC3::Kernel::Compute::gp_scalar)
+#define RUNGE_FUNCTION_GP PC3::Kernel::Compute::gp_scalar
 
 // Helper Macro to iterate a specific RK K
 #define CALCULATE_K( index, time, input_wavefunction, input_reservoir ) \
